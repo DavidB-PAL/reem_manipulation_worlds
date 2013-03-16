@@ -1,0 +1,24 @@
+<launch>
+
+  <!-- World with PAL tiled floor texture, causes bug with Gazebo physics -->
+  <!--<include file="$(find reem_manipulation_worlds)/launch/empty_world_throttled_with_floor.launch"/> -->
+
+  <!-- Default world, no floor plane -->
+  <include file="$(find reem_gazebo)/launch/empty_world_throttled.launch"/>
+
+
+  <!-- table3 is wooden table, 1.02 m high -->
+
+  <param name="table_description" 
+   command="$(find xacro)/xacro.py '$(find reem_manipulation_worlds)/urdf/table3.urdf.xacro'" />
+  <node name="spawn_table" pkg="gazebo" type="spawn_model" args="-urdf -param table_description -model table_1 -x 0.62" 
+   respawn="false" output="screen" />
+
+
+  <!-- spawn Coke can -->
+
+  <node name="spawn_cokecan1" pkg="gazebo" type="spawn_model" 
+   args="-urdf -file $(find reem_manipulation_worlds)/urdf/coke_can.urdf -model cokecan_1 -wait 'table_1' -x 0.17 -y -0.25  -z 1.20" 
+   respawn="false" output="screen" />
+
+</launch>

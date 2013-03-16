@@ -1,0 +1,36 @@
+<launch>
+
+  <!-- World with PAL tiled floor texture, causes bug with Gazebo physics -->
+  <!--<include file="$(find reem_manipulation_worlds)/launch/empty_world_throttled_with_floor.launch"/> -->
+
+  <!-- Default world, no floor plane -->
+  <include file="$(find reem_gazebo)/launch/empty_world_throttled.launch"/>
+
+
+  <!-- high white table -->
+
+  <param name="table_description" 
+   command="$(find xacro)/xacro.py '$(find reem_manipulation_worlds)/urdf/table_white_laminated.urdf.xacro'" />
+  <node name="spawn_table" pkg="gazebo" type="spawn_model" args="-urdf -param table_description -model table_1 -x 0.65" 
+   respawn="false" output="screen" />
+
+
+  <!-- spawn 4 coke cans, at increasing distances, on left side of table -->
+
+  <node name="spawn_cokecan2" pkg="gazebo" type="spawn_model" 
+   args="-urdf -file $(find reem_manipulation_worlds)/urdf/coke_can.urdf -model cokecan_2 -wait 'table_1' -x 0.32 -y 0.00  -z 1.20" 
+   respawn="false" output="screen" />
+
+  <node name="spawn_cokecan3" pkg="gazebo" type="spawn_model" 
+   args="-urdf -file $(find reem_manipulation_worlds)/urdf/coke_can.urdf -model cokecan_3 -wait 'table_1' -x 0.42 -y 0.15  -z 1.20" 
+   respawn="false" output="screen" />
+
+  <node name="spawn_cokecan4" pkg="gazebo" type="spawn_model" 
+   args="-urdf -file $(find reem_manipulation_worlds)/urdf/coke_can.urdf -model cokecan_4 -wait 'table_1' -x 0.52 -y 0.30  -z 1.20" 
+   respawn="false" output="screen" />
+
+  <node name="spawn_cokecan5" pkg="gazebo" type="spawn_model" 
+   args="-urdf -file $(find reem_manipulation_worlds)/urdf/coke_can.urdf -model cokecan_5 -wait 'table_1' -x 0.62 -y 0.45  -z 1.20" 
+   respawn="false" output="screen" />
+
+</launch>

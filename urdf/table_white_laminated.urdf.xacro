@@ -1,0 +1,362 @@
+<?xml version="1.0"?>
+<!-- 
+  High white table
+  White, laminated top
+  Brushed metal legs
+
+  102cm high, 80cm deep, 121cm long
+  Legs 4x4cm, texture: Custom/brushed_metal1
+
+  Copyright (c) 2013, David Butterworth, PAL Robotics S.L.
+  All rights reserved.
+
+  This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+  To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/3.0/ or send a letter to
+  Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
+-->
+
+<robot name="table"
+       xmlns:xi="http://www.w3.org/2001/XInclude"
+       xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
+       xmlns:model="http://playerstage.sourceforge.net/gazebo/xmlschema/#model"
+       xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:body="http://playerstage.sourceforge.net/gazebo/xmlschema/#body"
+       xmlns:geom="http://playerstage.sourceforge.net/gazebo/xmlschema/#geom"
+       xmlns:joint="http://playerstage.sourceforge.net/gazebo/xmlschema/#joint"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:rendering="http://playerstage.sourceforge.net/gazebo/xmlschema/#rendering"
+       xmlns:renderable="http://playerstage.sourceforge.net/gazebo/xmlschema/#renderable"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:physics="http://playerstage.sourceforge.net/gazebo/xmlschema/#physics">
+
+  <property name="table_height" value="1.02" />
+  <property name="table_width" value="0.80" />
+  <property name="table_depth" value="1.21" />
+  <property name="leg_radius" value="0.04" /> <!-- actually square legs -->
+  <property name="table_x" value="0.0" />
+  <property name="table_y" value="0.0" />
+  <property name="table_z" value="0.0" />
+
+  <property name="table_top_thickness" value="0.016"/> <!-- 16mm thick laminated table -->
+
+  <property name="leg_width_inset" value="0.12" /> <!-- Legs are inset 12cm from front/back -->
+  <property name="leg_depth_inset" value="0.03" /> <!-- Legs are inset 3cm from ends of table -->
+
+  <property name="support_width" value="0.015" /> <!-- thickness of lower support bars -->
+  <property name="support_height" value="0.050" /> <!-- height of support bars from ground -->
+  <property name="support_from_ground" value="0.140" />
+  <property name="end_supports_length" value="0.480" /> <!-- 80cm - 2x12 - 2x4 -->
+  <property name="middle_support_length" value="1.095" /> <!-- 121cm - 2x3 - 2x2 - 0.015 -->
+
+  <property name="M_PI" value="3.1415926535897931" />
+
+  <!-- tabletop height is .55+.01+.025=.585 -->
+  <link name="table_top_link">
+    <inertial>
+      <mass value="4.0" />
+      <origin xyz="${table_x} ${table_y} ${table_z+table_height-table_top_thickness/2}" />
+      <inertia ixx="1" ixy="0"  ixz="0"
+               iyy="1" iyz="0"
+               izz="1" />
+    </inertial> 
+    <visual>
+      <origin xyz="${table_x} ${table_y} ${table_z+table_height-table_top_thickness/2}" />
+      <geometry>
+        <box size="${table_width} ${table_depth} ${table_top_thickness}" />
+      </geometry>
+    </visual> 
+    <collision>
+      <origin xyz="${table_x} ${table_y} ${table_z+table_height-table_top_thickness/2}" />
+      <geometry>
+        <box size="${table_width} ${table_depth} ${table_top_thickness}" />
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="table_top_link">
+    <material>Custom/white_laminated1</material>
+    <mu1>50.0</mu1>
+    <mu2>50.0</mu2>
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+  </gazebo>
+
+  <!-- +x +y -->
+
+  <!-- rear-left leg -->
+  <joint name="leg1_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <origin xyz="${table_x+table_width/2 - leg_radius/2 - leg_width_inset} ${table_y+table_depth/2 - leg_radius/2 - leg_depth_inset} ${table_z+table_height - table_top_thickness}" rpy="0 0 0" />
+    <child link="leg1_link" />
+  </joint> 
+  <link name="leg1_link">
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0 0 ${-table_height/2}" />
+      <inertia ixx="0.1" ixy="0"  ixz="0"
+               iyy="0.1" iyz="0"
+               izz="0.01" />
+    </inertial> 
+    <visual>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0 0 0" />
+      <geometry>
+        <box size="${leg_radius} ${leg_radius} ${table_height - table_top_thickness}"/>
+      </geometry>
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <box size="${leg_radius} ${leg_radius} ${table_height - table_top_thickness}"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="leg1_link">
+    <material>Custom/brushed_metal1</material>
+    <mu1>1000.0</mu1>
+    <mu2>1000.0</mu2>
+    <kp>10000000.0</kp>
+    <kd>1.0</kd>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+
+  <!-- -x +y -->
+
+  <!-- front-left leg -->
+  <joint name="leg2_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <origin xyz="${table_x-table_width/2 + leg_radius/2 + leg_width_inset} ${table_y+table_depth/2 - leg_radius/2 - leg_depth_inset} ${table_z+table_height - table_top_thickness}" rpy="0 0 0" />
+    <child link="leg2_link" />
+  </joint> 
+  <link name="leg2_link">
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0 0 ${-table_height/2}" />
+      <inertia ixx="0.1" ixy="0"  ixz="0"
+               iyy="0.1" iyz="0"
+               izz="0.01" />
+    </inertial> 
+    <visual>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0 0 0" />
+      <geometry>
+        <box size="${leg_radius} ${leg_radius} ${table_height - table_top_thickness}"/>
+      </geometry>
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <box size="${leg_radius} ${leg_radius} ${table_height - table_top_thickness}"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="leg2_link">
+    <material>Custom/brushed_metal1</material>
+    <mu1>1000.0</mu1>
+    <mu2>1000.0</mu2>
+    <kp>10000000.0</kp>
+    <kd>1.0</kd>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+
+  <!-- rear-right leg -->
+  <joint name="leg3_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <origin xyz="${table_x+table_width/2 - leg_radius/2 - leg_width_inset} ${table_y-table_depth/2 + leg_radius/2 + leg_depth_inset} ${table_z+table_height - table_top_thickness}" rpy="0 0 0" />
+    <child link="leg3_link" />
+  </joint> 
+  <link name="leg3_link">
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0 0 ${-table_height/2}" />
+      <inertia ixx="0.1" ixy="0"  ixz="0"
+               iyy="0.1" iyz="0"
+               izz="0.01" />
+    </inertial> 
+    <visual>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0 0 0" />
+      <geometry>
+        <box size="${leg_radius} ${leg_radius} ${table_height - table_top_thickness}"/>
+      </geometry>
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <box size="${leg_radius} ${leg_radius} ${table_height - table_top_thickness}"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="leg3_link">
+    <material>Custom/brushed_metal1</material>
+    <mu1>1000.0</mu1>
+    <mu2>1000.0</mu2>
+    <kp>10000000.0</kp>
+    <kd>1.0</kd>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+
+  <!-- front-right leg -->
+  <joint name="leg4_joint" type="fixed" >
+    <parent link="table_top_link" />
+    <origin xyz="${table_x-table_width/2 + leg_radius/2 + leg_width_inset} ${table_y-table_depth/2 + leg_radius/2 + leg_depth_inset} ${table_z+table_height - table_top_thickness}" rpy="0 0 0" />
+    <child link="leg4_link" />
+  </joint> 
+  <link name="leg4_link">
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0 0 ${-table_height/2}" />
+      <inertia ixx="0.1" ixy="0"  ixz="0"
+               iyy="0.1" iyz="0"
+               izz="0.01" />
+    </inertial> 
+    <visual>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0 0 0" />
+      <geometry>
+        <box size="${leg_radius} ${leg_radius} ${table_height - table_top_thickness}"/>
+      </geometry>
+    </visual> 
+    <collision>
+      <origin xyz="0.0 0.0 ${-table_height/2}" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <box size="${leg_radius} ${leg_radius} ${table_height - table_top_thickness}"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="leg4_link">
+    <material>Custom/brushed_metal1</material>
+    <mu1>1000.0</mu1>
+    <mu2>1000.0</mu2>
+    <kp>10000000.0</kp>
+    <kd>1.0</kd>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo>
+    <static>true</static>
+    <canonicalBody>table_top_link</canonicalBody>
+  </gazebo>
+
+  <!-- attached to front-left leg  leg2_link 
+
+${table_x-table_width/2 + leg_radius/2 + leg_width_inset} ${table_y-table_depth/2 + leg_radius/2 + leg_depth_inset} ${-table_height/2 + support_from_ground + support_height/2}
+-->
+  <joint name="support1_joint" type="fixed" >
+    <parent link="leg2_link" />
+    <origin xyz="${leg_radius/2} 0.0 ${-table_height + support_from_ground + support_height/2}" rpy="0 0 0" />
+    <child link="support1_link" />
+  </joint> 
+  <link name="support1_link">
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="${end_supports_length/2} 0.0 0.0" />
+      <inertia ixx="0.1" ixy="0"  ixz="0"
+               iyy="0.1" iyz="0"
+               izz="0.01" />
+    </inertial> 
+    <visual>
+      <origin xyz="${end_supports_length/2} 0.0 0.0" rpy="0 0 0" />
+      <geometry>
+        <box size="${end_supports_length} ${support_width} ${support_height}"/>
+      </geometry>
+    </visual> 
+    <collision>
+      <origin xyz="${end_supports_length/2} 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <box size="${end_supports_length} ${support_width} ${support_height}"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="support1_link">
+    <material>Custom/brushed_metal1</material>
+    <mu1>1000.0</mu1>
+    <mu2>1000.0</mu2>
+    <kp>10000000.0</kp>
+    <kd>1.0</kd>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo>
+    <static>true</static>
+    <canonicalBody>table_top_link</canonicalBody>
+  </gazebo>
+
+  <!-- attached to front-right leg   leg4_link-->
+
+<!--
+${table_x-table_width/2 + leg_radius/2 + leg_width_inset} ${table_y-table_depth/2 + leg_radius/2 + leg_depth_inset} ${-table_height/2 + support_from_ground + support_height/2}
+-->
+  <joint name="support2_joint" type="fixed" >
+    <parent link="leg4_link" />
+    <origin xyz="${leg_radius/2} 0.0 ${-table_height + support_from_ground + support_height/2}" rpy="0 0 0" />
+    <child link="support2_link" />
+  </joint> 
+  <link name="support2_link">
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="${end_supports_length/2} 0.0 0.0" />
+      <inertia ixx="0.1" ixy="0"  ixz="0"
+               iyy="0.1" iyz="0"
+               izz="0.01" />
+    </inertial> 
+    <visual>
+      <origin xyz="${end_supports_length/2} 0.0 0.0" rpy="0 0 0" />
+      <geometry>
+        <box size="${end_supports_length} ${support_width} ${support_height}"/>
+      </geometry>
+    </visual> 
+    <collision>
+      <origin xyz="${end_supports_length/2} 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <box size="${end_supports_length} ${support_width} ${support_height}"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="support2_link">
+    <material>Custom/brushed_metal1</material>
+    <mu1>1000.0</mu1>
+    <mu2>1000.0</mu2>
+    <kp>10000000.0</kp>
+    <kd>1.0</kd>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo>
+    <static>true</static>
+    <canonicalBody>table_top_link</canonicalBody>
+  </gazebo>
+
+  <!-- attached to left end-support -->
+  <joint name="middle_support1_joint" type="fixed" >
+    <parent link="support1_link" />
+    <origin xyz="${end_supports_length/2} ${-support_width/2} 0.0" rpy="0 0 0" />
+    <child link="middle_support1_link" />
+  </joint> 
+  <link name="middle_support1_link">
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0.0 ${middle_support_length/2} 0.0" />
+      <inertia ixx="0.1" ixy="0"  ixz="0"
+               iyy="0.1" iyz="0"
+               izz="0.01" />
+    </inertial> 
+    <visual>
+      <origin xyz="0.0 ${-middle_support_length/2} 0.0" rpy="0 0 0" />
+      <geometry>
+        <box size="${support_width} ${-middle_support_length} ${support_height}"/>
+      </geometry>
+    </visual> 
+    <collision>
+      <origin xyz="0.0 ${-middle_support_length/2} 0.0" rpy="0.0 0.0 0.0" />
+      <geometry>
+        <box size="${support_width} ${-middle_support_length} ${support_height}"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="middle_support1_link">
+    <material>Custom/brushed_metal1</material>
+    <mu1>1000.0</mu1>
+    <mu2>1000.0</mu2>
+    <kp>10000000.0</kp>
+    <kd>1.0</kd>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo>
+    <static>true</static>
+    <canonicalBody>table_top_link</canonicalBody>
+  </gazebo>
+
+</robot>

@@ -1,0 +1,56 @@
+<launch>
+
+  <!-- World with PAL tiled floor texture, causes bug with Gazebo physics -->
+  <!--<include file="$(find reem_manipulation_worlds)/launch/empty_world_throttled_with_floor.launch"/> -->
+
+  <!-- Default world, no floor plane -->
+  <include file="$(find reem_gazebo)/launch/empty_world_throttled.launch"/>
+
+
+  <!-- REEM robot -->
+  <include file="$(find reem_gazebo)/launch/reem.launch"/>
+
+
+  <!-- Spawn 2 high white tables -->
+
+  <param name="table_description" 
+   command="$(find xacro)/xacro.py '$(find reem_manipulation_worlds)/urdf/table_white_laminated.urdf.xacro'" />
+
+  <node name="spawn_table1" pkg="gazebo" type="spawn_model" args="-urdf -param table_description -model table_1 -x 0.56" 
+   respawn="false" output="screen" />
+  <node name="spawn_table2" pkg="gazebo" type="spawn_model" args="-urdf -param table_description -model table_2 -x 0.54 -y 1.25" 
+   respawn="false" output="screen" />
+
+
+  <!-- Spawn wooden chair -->
+
+  <param name="kitchen_chair" textfile="$(find reem_manipulation_worlds)/urdf/wooden_kitchen_chair.urdf" />
+  <node name="spawn_kitchen_chair" pkg="gazebo" type="spawn_model" args="-urdf -param kitchen_chair -model kitchen_chair -x 1.2 -y 0.2 -z 0 
+   -R 0 -P 0 -Y -1.571" respawn="false" output="screen" />
+
+
+  <!-- Spawn 4 objects on table -->
+
+  <!-- Little box, left side, edge of table -->
+  <node name="spawn_test_object2" pkg="gazebo" type="spawn_model" 
+   args="-urdf -file $(find reem_manipulation_worlds)/urdf/test_object2.urdf -model test_object2 -wait 'table_1' -x 0.20 -y 0.15  -z 1.20 
+   -R 0 -P 0 -Y 0.5" respawn="false" output="screen" />
+
+  <!-- Coke can, right side, edge of table -->
+  <node name="spawn_cokecan1" pkg="gazebo" type="spawn_model"
+   args="-urdf -file $(find reem_manipulation_worlds)/urdf/coke_can.urdf -model cokecan_1 -wait 'table_1' -x 0.20 -y -0.15 -z 1.20" 
+   respawn="false" output="screen" />
+
+  <!-- smaller mug -->
+  <!-- yaw so handle is to the side -->
+  <node name="spawn_cup1" pkg="gazebo" type="spawn_model" 
+   args="-urdf -file $(find reem_manipulation_worlds)/urdf/cup2.urdf -model cup_1 -wait 'table_1' -x 0.42 -y 0.3  -z 1.20 -R 0 -P 0 -Y 1.571" 
+   respawn="false" output="screen" />
+
+  <!-- Pringles (red) -->
+  <!-- rotated so texture is the right-way up -->
+  <node name="spawn_pringles1" pkg="gazebo" type="spawn_model" 
+   args="-urdf -file $(find reem_manipulation_worlds)/urdf/pringles.urdf -model pringles_1 -wait 'table_1' -x 0.70 -y -0.45  -z 1.20 
+   -R 3.14159 -P 0 -Y 0 " respawn="false" output="screen" />
+
+</launch>

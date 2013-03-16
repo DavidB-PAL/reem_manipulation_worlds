@@ -1,0 +1,25 @@
+<package>
+  <description brief="reem_manipulation_worlds">
+A collection of Gazebo simulation worlds and objects, used for testing manipulation with the REEM robot.
+
+Tested with ROS Fuerte. The Gazebo Fuerte "grasping hack" must be used, and is enabled in reem_description.
+
+ToDo: Gazebo Fuerte has bugs which prevent display of some object textures, and if the floor plane is enabled it destabilizes the robot.
+
+Based on manipulation_worlds for PR2, and reem_robocup_worlds.
+  </description>
+  <author>David Butterworth</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/reem_manipulation_worlds</url>
+  <depend package="reem_gazebo"/>
+
+  <!-- So we can load custom Gazebo textures from Media directory  -->
+  <depend package="gazebo"/>
+  <export>
+    <gazebo gazebo_media_path="${prefix}" />
+  </export>
+
+</package>
+
+

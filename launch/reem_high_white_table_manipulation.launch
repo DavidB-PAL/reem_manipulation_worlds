@@ -18,7 +18,7 @@
 
   <node name="spawn_table1" pkg="gazebo" type="spawn_model" args="-urdf -param table_description -model table_1 -x 0.56" 
    respawn="false" output="screen" />
-  <node name="spawn_table2" pkg="gazebo" type="spawn_model" args="-urdf -param table_description -model table_2 -x 0.54 -y 1.25" 
+  <node name="spawn_table2" pkg="gazebo" type="spawn_model" args="-urdf -param table_description -model table_2 -x 0.56 -y 1.25" 
    respawn="false" output="screen" />
 
 

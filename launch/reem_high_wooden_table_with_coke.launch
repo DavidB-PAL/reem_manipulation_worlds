@@ -7,6 +7,10 @@
   <include file="$(find reem_gazebo)/launch/empty_world_throttled.launch"/>
 
 
+  <!-- REEM robot -->
+  <include file="$(find reem_gazebo)/launch/reem.launch"/>
+
+
   <!-- table3 is wooden table, 1.02 m high -->
 
   <param name="table_description" 

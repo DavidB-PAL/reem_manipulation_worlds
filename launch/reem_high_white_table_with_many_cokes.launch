@@ -7,6 +7,10 @@
   <include file="$(find reem_gazebo)/launch/empty_world_throttled.launch"/>
 
 
+  <!-- REEM robot -->
+  <include file="$(find reem_gazebo)/launch/reem.launch"/>
+
+
   <!-- high white table -->
 
   <param name="table_description" 
